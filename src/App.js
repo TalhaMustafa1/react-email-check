@@ -1,37 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    // Function to get URL parameter value by name
-    const getParameterValue = (name) => {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    };
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get('email');
 
-    // Get the 'email' parameter from the URL
-    const emailFromUrl = getParameterValue('email');
-
-    // Set the email state if the parameter is present
-    if (emailFromUrl) {
-      setEmail(emailFromUrl);
-
-      // Remove the 'email' parameter from the URL
-      const urlWithoutEmail = window.location.href.replace(`email=${emailFromUrl}`, '');
-      window.history.replaceState({}, document.title, urlWithoutEmail);
+    if (emailParam) {
+      setEmail(emailParam);
+      const newParams = new URLSearchParams(params);
+      newParams.delete('email');
+      window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
     }
   }, []);
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
   return (
     <div className="flex-container">
       <div className="left-part">
-        <h1 className="text-4xl">Left Part</h1>
+        <h1 className="text-4xl">My Part</h1>
       </div>
       <div className="right-part">
         <h1 className="text-4xl">Right part</h1>
-        <input type="email" value={email} readOnly />
+        <input type="email" value={email} onChange={handleEmailChange} />
       </div>
     </div>
   );
